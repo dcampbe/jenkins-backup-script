@@ -2,12 +2,13 @@
 
 ##################################################################################
 function usage(){
-  echo "usage: ./jenkins-backup.sh /path/to/jenkins_home archive.tar.gz"
+  echo "usage: ./jenkins-backup.sh /path/to/jenkins_home archive.tar.gz [/some/target/dir]"
 }
 ##################################################################################
 
 readonly JENKINS_HOME=$1
 readonly DIST_FILE=$2
+readonly TARGET_DIR=$3
 readonly CUR_DIR=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)
 readonly TMP_DIR="$CUR_DIR/tmp"
 readonly ARC_NAME="jenkins-backup"
@@ -48,5 +49,10 @@ tar czvf $TMP_TAR_NAME $ARC_NAME/*
 
 echo "cp $TMP_DIR/$TMP_TAR_NAME $DIST_FILE"
 cp $TMP_DIR/$TMP_TAR_NAME $DIST_FILE
+
+if [ ! -z "$TARGET_DIR"  ] ; then
+echo "mv $DIST_FILE $TARGET_DIR"
+  mv $DIST_FILE $TARGET_DIR
+fi
 
 exit 0
