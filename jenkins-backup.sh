@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 ##################################################################################
 function usage(){
@@ -26,28 +26,21 @@ fi
 rm -rf $ARC_DIR
 mkdir -p $ARC_DIR/plugins
 mkdir -p $ARC_DIR/jobs
+mkdir -p $ARC_DIR/users
 
-echo "cp $JENKINS_HOME/*.xml $ARC_DIR"
 cp $JENKINS_HOME/*.xml $ARC_DIR
-
-echo "cp $JENKINS_HOME/plugins/*.jpi $ARC_DIR/plugins"
 cp $JENKINS_HOME/plugins/*.jpi $ARC_DIR/plugins
+cp -R $JENKINS_HOME/users/* $ARC_DIR/users
 
 cd $JENKINS_HOME/jobs/
-for job_name in `ls -d *`
+ls -1 | while read job_name
 do
-  echo "mkdir -p $ARC_DIR/jobs/$job_name/"
-  mkdir -p $ARC_DIR/jobs/$job_name/
-
-  echo "cp $JENKINS_HOME/jobs/$job_name/*.xml $ARC_DIR/jobs/$job_name/"
-  cp $JENKINS_HOME/jobs/$job_name/*.xml $ARC_DIR/jobs/$job_name/
+  mkdir -p $ARC_DIR/jobs/"$job_name"/
+  cp $JENKINS_HOME/jobs/"$job_name"/*.xml $ARC_DIR/jobs/"$job_name"/
 done
 
 cd $TMP_DIR
-echo "tar czvf $TMP_TAR_NAME $ARC_NAME/*"
 tar czvf $TMP_TAR_NAME $ARC_NAME/*
-
-echo "cp $TMP_DIR/$TMP_TAR_NAME $DIST_FILE"
 cp $TMP_DIR/$TMP_TAR_NAME $DIST_FILE
 
 if [ ! -z "$TARGET_DIR"  ] ; then
